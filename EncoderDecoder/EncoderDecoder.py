@@ -2,10 +2,9 @@ import string
 import random
 import json
 import os
-import fnmatch
 import sys
-import importlib.util
-from CustomExceptions import *
+import re  # Added for regex functionality
+from fnmatch import fnmatch
 
 class EncoderDecoder:
     def __init__(self, old_key, new_key):
@@ -66,18 +65,21 @@ class EncoderDecoder:
 
     def Fourth_Choice_CLI(self):
         print("-" * 16, "Search for File", "-" * 16)
-        search_root = input("Enter the root directory to start the search (e.g., C:\\): ").rstrip("\\/")
+        search_root = input("Enter the root directory to start the search (e.g., C:\\): ").strip()
         search_pattern = input("Enter the file name or pattern to search for: ").lower()
 
         def find_files(root, pattern):
             matches = []
             try:
+                regex_pattern = re.compile(f".*{re.escape(pattern)}.*", re.IGNORECASE)
                 for path, _, files in os.walk(root):
                     for name in files:
-                        if pattern in name.lower():  # Check if pattern is contained in filename
+                        if regex_pattern.search(name.lower()):
                             matches.append(os.path.join(path, name))
             except PermissionError:
                 print("Permission denied while accessing some directories.")
+            except Exception as e:
+                print(f"An error occurred while searching: {e}")
             return matches
 
         found_files = find_files(search_root, search_pattern)
@@ -107,6 +109,7 @@ class EncoderDecoder:
             print("Invalid option. Returning to menu.")
         self.Choice_CLI()
 
+
     def Choice_CLI(self):
         user_choice = self.Initial_CLI()
         if user_choice == 1:
@@ -120,22 +123,23 @@ class EncoderDecoder:
 
 # Key Handling
 def save_keys(old_key, new_key, filename="keys.json"):
+    file_path = os.path.join(os.getcwd(), filename)  # Save the file in the current working directory
     keys = {'old_key': old_key, 'new_key': new_key}
-    with open(filename, 'w') as file:
+    with open(file_path, 'w') as file:
         json.dump(keys, file)
+    print(f"Keys saved to: {file_path}")  # Debugging line
 
 def load_keys(filename="keys.json"):
-    script_dir = os.path.dirname(os.path.abspath(__file__))  # Get script's directory
-    file_path = os.path.join(script_dir, filename)  # Construct full path
-    
+    file_path = os.path.join(os.getcwd(), filename)  # Load the file from the current working directory
     print(f"Looking for keys at: {file_path}")  # Debugging line
 
     if os.path.exists(file_path):
         with open(file_path, 'r') as file:
             keys = json.load(file)
             return keys['old_key'], keys['new_key']
-    
-    return None, None
+    else:
+        print(f"Keys file not found at {file_path}.")  # Debugging line
+        return None, None
 
 if __name__ == "__main__":
     try:
