@@ -2,5 +2,5 @@
 ## Created by Ethan Dolphin
 
 ### Decription:
-This program will create and use keys to encode/decode text and files \n
+This program will create and use keys to encode/decode text and files <br/>
 Keys are randomly created at request or manually input into a file named "keys.json"
