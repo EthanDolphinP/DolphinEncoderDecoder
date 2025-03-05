@@ -147,7 +147,24 @@ def load_keys(filename="keys.json"):
     return None, None
 
 if __name__ == "__main__":
-    old_key_list, new_key = load_keys()
-    if old_key_list is None or new_key is None:
-        raise KeyError("Encryption keys not found. Please provide valid keys in keys.json.")
+    try:
+        old_key_list, new_key = load_keys()
+        if old_key_list is None or new_key is None:
+            raise KeyError("Encryption keys not found.")
+    except KeyError as e:
+        print(e)
+        user_option = input("Would you like to create new keys (y/n): ").lower()
+        if user_option == 'y':
+            # Generate new keys
+            print("Creating new keys...")
+            old_key_list = list(string.ascii_lowercase)
+            new_key = random.sample(old_key_list, len(old_key_list))
+
+            # Save new keys
+            save_keys(old_key_list, new_key)
+            print("New keys have been generated and saved.")
+        else:
+            print("Exiting program.")
+            sys.exit(0)
+
     EncoderDecoder(old_key_list, new_key).Choice_CLI()
