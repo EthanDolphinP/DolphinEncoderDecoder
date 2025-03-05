@@ -5,16 +5,7 @@ import os
 import fnmatch
 import sys
 import importlib.util
-
-# Load CustomExceptions.py dynamically
-custom_exceptions_path = "C:/Users/edolp/Desktop/Python/MyStuff/CustomExceptions.py"
-spec = importlib.util.spec_from_file_location("CustomExceptions", custom_exceptions_path)
-custom_exceptions = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(custom_exceptions)
-
-# Assign custom exceptions
-SecurityError = custom_exceptions.SecurityError
-KeyError = custom_exceptions.KeyError  # Be careful, this name overrides built-in KeyError
+from CustomExceptions import *
 
 class EncoderDecoder:
     def __init__(self, old_key, new_key):
