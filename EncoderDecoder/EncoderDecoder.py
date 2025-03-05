@@ -69,6 +69,7 @@ class EncoderDecoder:
         search_pattern = input("Enter the file name or pattern to search for: ").lower()
 
         def find_files(root, pattern):
+            print("Searching...")
             matches = []
             try:
                 regex_pattern = re.compile(f".*{re.escape(pattern)}.*", re.IGNORECASE)
